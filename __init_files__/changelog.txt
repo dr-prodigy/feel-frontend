@@ -1,0 +1,347 @@
+--------------------------------------------------
+Version 1.9.7 CE (charly) - (01/05/2017)
+--------------------------------------------------
+NEW FEATURES
+
+**** FEEL Community Edition first release (charly) ****
+Welcome to FEEL Community Edition.
+After almost 6 years of project (and my) life, I'm releasing
+FEEL under LGPL, for any of you loving it..
+..enjoy, cheers!
+dr.p
+
+--------------------------------------------------
+Version 1.9.6 (30/10/2016) -> 1.9.6.2 (21/12/2016)
+--------------------------------------------------
+NEW FEATURES
+- **** added new actors layer (actors.png) ****
+- **** animated main.png, actors.png and bezel.png management: dynamic layouts ****
+- **** added MAME (thx to adolfo69), WWFeel & WWFeel91, SFeelII (thx to barito) new layouts ****
+- main workflow optimizations
+
+BUGFIXES
+- placeholder replacement fixes
+- keyboard repeat time not reset bug
+- occasional crash upon network error (only reported on Win10)
+
+--------------------------------------------------
+Version 1.9.5 (23/06/2016) -> 1.9.5.4 (30/09/2016)
+--------------------------------------------------
+NEW FEATURES
+- added setup script (setup.vbs)
+- **** autostart screensaver ****
+- guided startup messages for new emulators
+- screensaver selection from menu
+- disable stars from menu, fast list filter change
+- added exit_from_menu_enabled (enables/disables exit item in main menu)
+- added disable_alt_f4 parameter (enables/disables alt-f4 block)
+- new UI rendering engine (nested layouts, borders, auto-resize, more accurate wordwrap, others)
+- menu icons (FEEL logo or custom images)
+- advanced game info window (sums up all available game data + snapshot on a single view)
+- incremental (md5sum-based) layouts download on new version update
+- page scrolling on text viewer window
+- more friendly statistics
+- show/hide menu icons
+- show/hide mouse pointer
+- network tasks optimization: much faster!
+- UX, UI & graphical transition refinements
+
+BUGFIXES
+- Hook locking up FEEL if emulator not found fix
+- empty "TOP GAMES" crash fix
+- mp3 music directory bug on layout change
+- HOT: default config management fix (default values restore at change)
+- video update during network & async tasks
+- immediate messages fix
+- Feeledit: path search fix
+- videosnap wrong resizing fix (v.1.9.5.1)
+- snapshot wrong resizing regression fix (v.1.9.5.2)
+- layout MD5 hashing fix (v.1.9.5.2)
+
+-------------------------------------------------
+Version 1.9 (19/10/2015) -> 1.9.3 (25/4/2016)
+-------------------------------------------------
+NEW FEATURES
+- cross-fading transitions
+- updated FeelEdit version to 1.9.2.8 (i.e.: aligned to Feel: simpler!)
+- pre/post_emulator_wait_for_exit parameters (added to FeelEdit too)
+- **** Video/snap loaded in background => max. UI responsiveness -> upgraded in 1.9.2.8 ****
+- black background on/off available for rom snap, marquee, cabinet images
+- **** FeelEdit 0.9.2.5: added management for all missing parameters since 1.2.x + many upgrades and fixes ****
+- **** ArcadeDB (http://adb.arcadeitalia.net) integration!!! Rom history fetched ADB API ****
+- **** "check for updates" feature -> fixed in 1.9.2.6 ****
+- **** service mode ****
+- **** MAME/MESS 0.162+ machine support (-listsoftware integration) ****
+- **** all parent images used on clone games (if clone one is missing) -> fixed in 1.9.2.5 ****
+- rom description cleanup
+- search toasts
+- changelog (shown after update or from menu)
+- new menu organization and design
+- new UI widgets (scrollable text)
+- async tasks complete refactoring
+- snapshot black background enable param
+- emulator start parameters auto-fix
+- show/hide clock
+- show/hide search key hint
+
+BUGFIXES
+- FeelEdit: "last line bug" fix
+- menu sounds minor refinements
+- videosnap after game play fix
+- videosnap repeat fix
+- unprintable chars crash fix
+- missing custom image fix
+- missing emulator_path fix
+- toast display fix
+- list build fix
+- bad videosnaps exception trap
+- rom list correctly positioned after order change
+- "back to normal list" bug on unique platform config fix
+
+-------------------------------------------------
+Version 1.8 (18/05/2015) -> 1.8.1 (12/09/2015)
+-------------------------------------------------
+NEW FEATURES
+- **** added support for vertical screens ****
+- **** MAME 0.162+ support (i.e.: new XMLinfo format) ****
+- recently played sort-mode
+- explorer shell autostart if not running at FEEL close
+- hide mouse cursor when running
+- images on-scroll optimization
+- LED transitions & fx upgraded
+- window focus-forcing (avoid background starts or focus lost after emu runs)
+
+BUGFIXES
+- stretched videosnap bug
+- minor fixes
+- resolution management optimizations and bugfixes
+- more complete placeholder parsing on paths
+- joypad optimizations
+- MAME multiple command types handling
+- better error messages management
+
+-------------------------------------------------
+Version 1.7 (08/02/2015) -> 1.7.0.4 (02/05/2015)
+-------------------------------------------------
+NEW FEATURES
+- **** added SmartASD (LED buttons hw board) support ****
+
+BUGFIXES
+- autostart on top games list bug
+
+-------------------------------------------------
+Version 1.6 (11/09/2015) -> 1.6.0.2 (16/01/2015)
+-------------------------------------------------
+NEW FEATURES
+- **** all emu TOP GAMES list ****
+- cab & marquee fade-in transitions
+
+BUGFIXES
+- rom_path missing on build list bug fix
+- removed crash on not printable chars in mame XML ("weird" MAME builds support)
+- minor fixes
+
+-------------------------------------------------
+Version 1.5.2 (21/06/2014) -> 1.5.6 (28/10/2014)
+-------------------------------------------------
+NEW FEATURES
+- ** single rom configuration support (i.e.: multi-emu data stored in "cfg" directory, under emu config dir) **
+- ** high speed scroll optimization (secondary images are loaded only when scroll is over) **
+- menu key params configurable separately
+- minimum scroll time configurable via param
+- support for .lnk files (via emulator_useshell param)
+- auto-adaptive menu
+- multi-font support via additional .xnb files
+- QWERTY keyboard on Find Game
+
+BUGFIXES
+- added case-insensitive match on .nms files
+- changeres hotfix
+- add game positioning bug fix
+- minor fixes
+
+- added adolfo69 credits
+
+-------------------------------------------------
+Version 1.5.1 - 14/06/2014
+-------------------------------------------------
+NEW FEATURES
+- **** rom auto-start on FE load (monogame, last played, last selected) ****
+- configurable images (snapshot, marquee etc.) extension (.png, .jpg, etc.)
+
+BUGFIXES
+- font management improvements (default to 6px, fontstyle support)
+- minor fixes
+
+-------------------------------------------------
+Version 1.5 - 03/06/2014
+-------------------------------------------------
+NEW FEATURES
+- moved to .NET framework 3.5, XNA Game Studio 3.1, DirectShowLib, SharpDX
+- added transparencies on all layout elements
+- complete graphics code refactoring
+- layout refresh code refactoring
+- simpler stats
+- fade-in transitions
+- automatic performance tuning
+- status and confirm (toast) messages 
+- joypad HAT support & optimizations
+- layout bezel management
+- romlist_disable_stars (star ratio list removal) parameter added
+
+-------------------------------------------------
+Version 1.2 - 03/10/2013
+-------------------------------------------------
+- marked stable
+
+-------------------------------------------------
+Version 1.2RC0 - 15/09/2013
+-------------------------------------------------
+NEW FEATURES
+- *** added FEELEdit module ***
+- sound on videosnap
+- background music shuffle
+- start process fixes
+- added watch on main menu
+- list sort by year, manufacturer, category, input control
+
+BUGFIXES
+- removed videosnap on commands custom image
+- fix label sizing
+- support for mame.xml version < 0.106u12
+- fix path errors in mame.xml building
+- cursor position fix on add/remove game
+- support for sound volume change on all config levels
+- fix for enhanced find game crash
+
+-------------------------------------------------
+Version 1.1 - 08/03/2013
+-------------------------------------------------
+- find game refinements (status bar, full-text search)
+- previous platform, emu, gamelist options
+- menu scrolling
+
+-------------------------------------------------
+Version 1.0.9 - 22/02/2013
+-------------------------------------------------
+- enhanced find game mode (letter matrix)
+- fixed crash on screensaver
+- hardening and fixes
+
+-------------------------------------------------
+Version 1.0.8.2 - 17/02/2013
+-------------------------------------------------
+- new find game mode (filtered list)
+- fixed crash on starting video coming from a layout with no videos
+- refactoring
+
+-------------------------------------------------
+Version 1.0.8.1 - 12/02/2013
+-------------------------------------------------
+- fixed regression on [rom_path] substitution
+- fixed [space] not working on find games
+
+-------------------------------------------------
+Version 1.0.8 - 10/02/2013
+-------------------------------------------------
+
+- marquee and cabinet images management
+- new "space-ext" layout added
+- "layout_test_mode" parameter added
+- "Reload config" in test mode now refreshes the whole layout
+- support for older MAME listxml format
+- cleanups and refinements
+
+-------------------------------------------------
+Version 1.0.7.1 - 04/02/2013
+-------------------------------------------------
+
+- fix for mame -listxml generation on mame spinoffs with different exe names (mameuifx.exe, etc.)
+- fix for layout label deactivation
+- friendly error messageboxes
+- minor bugfixes
+
+-------------------------------------------------
+Version 1.0.7 - 09/05/2012
+-------------------------------------------------
+
+ - ranking algorithm adjustment
+ - bug fixing
+
+-------------------------------------------------
+Version 1.0.6 - 28/12/2011
+-------------------------------------------------
+
+ - scrollable menu
+ - credits
+
+-------------------------------------------------
+Version 1.0.5 - 03/12/2011
+-------------------------------------------------
+
+ - sound fix on scrolling list
+ - sorting algorithm fix
+ - automatic save last sorting list
+ - rating alignment center
+ - optional parameters management
+ - screensaver empty list fix
+ - show/hide clones only in the all-games list
+
+-------------------------------------------------
+Version 1.0.4 - 24/11/2011
+-------------------------------------------------
+
+ - full support for Windows XP/Vista/7 x64
+ - sound fix in layout change
+
+-------------------------------------------------
+Version 1.0.3 - 18/11/2011
+-------------------------------------------------
+
+ - sound fx and background music support (.wav and .mp3):
+    + add new params in feel.ini (see it for more info)
+
+ - video support (.avi):
+    + add [video_speed] param in in feel.ini (see it for more info)
+    + add [video_path] param in [emulator].ini (see mame.ini for more info)
+
+ - joypad support, dead zone for analog axes, max 15 buttons
+
+ - Rom Stats (MostPlayed list with weighted sort algorithm)
+
+ - set last value for another default level params in ini tree (fix)
+
+ - set not found values in ini files (as rem)
+
+-------------------------------------------------
+Version 1.0.2 - 06/11/2011
+-------------------------------------------------
+
+ - ini files params and folder tree revisited (need to re-configure previous version)
+
+ - refresh all objects and layout itself in runtime test_mode (new menu items)
+
+ - add support for single emulator layout (adding current_layout param in [emulator].ini)
+
+ - screen saver with shuffle support (previous and next random game selection during screen saver)
+
+-------------------------------------------------
+Version 1.0.1 - 29/10/2011
+-------------------------------------------------
+
+ - hi-quality filter for snapshot scaling
+
+ - snapshot stretching (configuration set in layout.ini)
+
+ - better change resolution system
+
+ - sigle-instance check
+
+ - snapshot saving activated by Print key (working on all emu): fixed or stretched mode
+   (parameters in feel.ini)
+
+-------------------------------------------------
+Version 1.0.0 - 24/10/2011
+-------------------------------------------------
+
+ - F.E.E.L. - first version
