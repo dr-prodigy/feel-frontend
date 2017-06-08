@@ -107,9 +107,21 @@ namespace feel
                     for (var iLoop = 0; iLoop < fileList.Length; iLoop++)
                     {
                         var romName = Path.GetFileNameWithoutExtension(fileList[iLoop]);
+                        var romRelativePath = fileList[iLoop].Substring(romPath.Length + 1); // skip initial backslash
+                        romRelativePath = romRelativePath.Substring(0,
+                            romRelativePath.Length - romName.Length - objConfig.rom_extension.Split(',')[0].Trim().Length - 1); // skip "."
                         var item = srcList.Find(c => c.Key.ToLower() == romName);
                         if (item != null)
+                        {
+                            if (romRelativePath != string.Empty)
+                            {
+                                // remove trailing backslash
+                                if (romRelativePath.Substring(romRelativePath.Length - 1) == Path.DirectorySeparatorChar.ToString())
+                                    romRelativePath = romRelativePath.Substring(0, romRelativePath.Length - 1);
+                                item.RomRelativePath = romRelativePath;
+                            }
                             dstList.Add(item);
+                        }
                         if (iLoop % 100 == 0)
                             feel.ShowMessage("Adding available roms: " + Math.Floor((float)iLoop / (float)fileList.Length * 100.0f) + "%", true);
                     }
@@ -145,7 +157,7 @@ namespace feel
                         rom.Manufacturer = file.ReadLine();
                         rom.CloneOf = file.ReadLine();
                         rom.Bios = file.ReadLine();
-                        rom.DisplayType = file.ReadLine();
+                        rom.ExtraData = file.ReadLine();
                         rom.ScreenOrientation = file.ReadLine();
                         rom.InputControl = file.ReadLine();
                         rom.Status = file.ReadLine();
@@ -212,7 +224,7 @@ namespace feel
                     file.WriteLine(rom.Manufacturer);
                     file.WriteLine(rom.CloneOf);
                     file.WriteLine(rom.Bios);
-                    file.WriteLine(rom.DisplayType);
+                    file.WriteLine(rom.ExtraData);
                     file.WriteLine(rom.ScreenOrientation);
                     file.WriteLine(rom.InputControl);
                     file.WriteLine(rom.Status);
@@ -228,7 +240,7 @@ namespace feel
                     outputLineSB.Append(rom.Manufacturer).Append("|");
                     outputLineSB.Append(rom.CloneOf).Append("|");
                     outputLineSB.Append(rom.Bios).Append("|");
-                    outputLineSB.Append(rom.DisplayType).Append("|");
+                    outputLineSB.Append(rom.ExtraData).Append("|");
                     outputLineSB.Append(rom.ScreenOrientation).Append("|");
                     outputLineSB.Append(rom.InputControl).Append("|");
                     outputLineSB.Append(rom.Status).Append("|");

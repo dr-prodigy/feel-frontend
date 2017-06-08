@@ -378,7 +378,48 @@ namespace feel
         public string Manufacturer { get; set; }
         public string CloneOf { get; set; }
         public string Bios { get; set; }
-        public string DisplayType { get; set; }
+        private List<string> _extraData = new List<string>();
+        // §-separated data: VideoType, RomRelativePath
+        public string ExtraData
+        {
+            get
+            {
+                return string.Join("§", _extraData.ToArray());
+            }
+            set
+            {
+                _extraData.Clear();
+                _extraData.AddRange(value.Split('§'));
+            }
+        }
+        public string VideoType
+        {
+            get
+            {
+                return _extraData[0];
+            }
+            set
+            {
+                _extraData[0] = value;
+            }
+        }
+
+        public string RomRelativePath
+        {
+            get
+            {
+                if (_extraData.Count > 1)
+                    return _extraData[1];
+                return string.Empty;
+            }
+            set
+            {
+                if (_extraData.Count > 1)
+                    _extraData[1] = value;
+                else
+                    _extraData.Add(value);
+            }
+        }
         public string ScreenOrientation { get; set; }
         public string InputControl { get; set; }
         public string Status { get; set; }
@@ -411,7 +452,7 @@ namespace feel
         public RomDesc()
         {
             Key = Description = Year = Manufacturer = CloneOf = Bios =
-                DisplayType = ScreenOrientation = InputControl = Status =
+                ExtraData = ScreenOrientation = InputControl = Status =
                 Color = Sound = Category = string.Empty;
 
             PlayedCount = 0;
@@ -430,7 +471,7 @@ namespace feel
             Manufacturer = lineValues[3];
             CloneOf = lineValues[4];
             Bios = lineValues[5];
-            DisplayType = lineValues[6];
+            ExtraData = lineValues[6];
             ScreenOrientation = lineValues[7];
             InputControl = lineValues[8];
             Status = lineValues[9];

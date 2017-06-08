@@ -309,7 +309,7 @@ namespace feel
                                     switch (reader.Name)
                                     {
                                         case "type":
-                                            rom.DisplayType = reader.Value;
+                                            rom.VideoType = reader.Value;
                                             break;
                                         case "rotate":
                                             rom.ScreenOrientation = (reader.Value == "90" || reader.Value == "270") ? "Vertical" : "Horizontal";

@@ -186,19 +186,19 @@ namespace feel
 
         public static string[] GetFiles(string romPath, string romExtension)
         {
-            if (romExtension.IndexOf(',') > -1)
-            {
-                var extensions = romExtension.Split(',');
+            var extensions = romExtension.Split(',');
 
-                var list = new List<string>();
+            var list = new List<string>();
 
-                foreach (string ext in extensions)
-                    list.AddRange(Directory.GetFiles(romPath, "*." + ext.Trim()));
+            // recurse subdirectories
+            foreach (var dir in Directory.GetDirectories(romPath, "*"))
+                list.AddRange(GetFiles(dir, romExtension));
 
-                return (string[])list.ToArray();
-            }
-            else
-                return Directory.GetFiles(romPath, "*." + romExtension);
+            // add roms
+            foreach (string ext in extensions)
+                list.AddRange(Directory.GetFiles(romPath, "*." + ext.Trim()));
+
+            return (string[])list.ToArray();
         }
 
         public static string GetRomExtension(string romPath, string romName, string romExtension)
@@ -209,7 +209,7 @@ namespace feel
 
                 foreach (string ext in extensions)
                 {
-                    if (File.Exists(romPath  + Path.DirectorySeparatorChar  + romName + "." + ext.Trim()))
+                    if (File.Exists(romPath + Path.DirectorySeparatorChar + romName + "." + ext.Trim()))
                         return ext.Trim();
                 }
                 return "";

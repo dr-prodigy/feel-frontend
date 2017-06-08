@@ -1005,7 +1005,7 @@ namespace feel
                             }
                             romManufacturer.Text = manufacturer.ToString();
                         }
-                        romDisplayType.Text = currentRom.DisplayType;
+                        romDisplayType.Text = currentRom.VideoType;
                         romInputControl.Text = currentRom.InputControl;
                         romStatus.Text = currentRom.Status;
                         romCategory.Text = currentRom.Category;
@@ -1345,6 +1345,7 @@ namespace feel
                     // REMAPPING
                     var arr = _runConfig.input_mapping.Split(',');
                     var str = "-run " + "\"" + command + " " + arguments.Replace("\"", "'") + "\"";
+                    //var str = "-run " + "\"" + command + " " + arguments.Replace("\"", "\"\"") + "\"";
                     foreach (var map in arr)
                         str += " -map " + map.Trim();
                     StartProcess(Application.StartupPath + Path.DirectorySeparatorChar + "hook.exe", str, workingDir, true, false, true, "hook.exe");
@@ -1493,19 +1494,28 @@ namespace feel
                 if (string.IsNullOrEmpty(arguments))
                     return string.Empty;
                 var found = false;
+                var romPath = config.rom_path;
+                if (currentRom != null)
+                {
+                    romPath += currentRom.RomRelativePath != string.Empty ? Path.DirectorySeparatorChar + currentRom.RomRelativePath : string.Empty;
+                }
 
                 var index = arguments.IndexOf("[rom_path]", 0, StringComparison.CurrentCultureIgnoreCase);
-                if (index >= 0) { arguments = arguments.Substring(0, index) + config.rom_path + arguments.Substring(index + 10); found = true; }
+                if (index >= 0) { arguments = arguments.Substring(0, index) + romPath + arguments.Substring(index + 10); found = true; }
 
                 if (currentRom != null)
                 {
-                    var romExtension = Utils.GetRomExtension(config.rom_path, currentRom.FeelInfo.RomName, config.rom_extension);
+                    index = romPath.IndexOf("[emulator_path]", 0, StringComparison.CurrentCultureIgnoreCase);
+                    if (index >= 0) { romPath = romPath.Substring(0, index) + config.emulator_path + romPath.Substring(index + 15); }
+
+                    var romName = currentRom.FeelInfo.RomName;
+                    var romExtension = Utils.GetRomExtension(romPath, romName, config.rom_extension);
 
                     index = arguments.IndexOf("[rom_name]", 0, StringComparison.CurrentCultureIgnoreCase);
-                    if (index >= 0) { arguments = arguments.Substring(0, index) + currentRom.FeelInfo.RomName + arguments.Substring(index + 10); found = true; }
+                    if (index >= 0) { arguments = arguments.Substring(0, index) + romName + arguments.Substring(index + 10); found = true; }
 
                     index = arguments.IndexOf("[full_path]", 0, StringComparison.CurrentCultureIgnoreCase);
-                    if (index >= 0) { arguments = arguments.Substring(0, index) + config.rom_path + Path.DirectorySeparatorChar + currentRom.FeelInfo.RomName + "." + romExtension + arguments.Substring(index + 11); found = true; }
+                    if (index >= 0) { arguments = arguments.Substring(0, index) + romPath + Path.DirectorySeparatorChar + romName + "." + romExtension + arguments.Substring(index + 11); found = true; }
 
                     index = arguments.IndexOf("[rom_extension]", 0, StringComparison.CurrentCultureIgnoreCase);
                     if (index >= 0) { arguments = arguments.Substring(0, index) + romExtension + arguments.Substring(index + 15); found = true; }
@@ -1513,7 +1523,7 @@ namespace feel
                     index = arguments.IndexOf("[full_dos_path]", 0, StringComparison.CurrentCultureIgnoreCase);
                     if (index >= 0)
                     {
-                        var full_path = config.rom_path + Path.DirectorySeparatorChar + currentRom.FeelInfo.RomName + "." + romExtension;
+                        var full_path = romPath + Path.DirectorySeparatorChar + romName + "." + romExtension;
                         arguments = arguments.Substring(0, index) + Utils.ConvertToDosPath(full_path) + arguments.Substring(index + 15);
                         found = true;
                     }
@@ -1544,7 +1554,7 @@ namespace feel
             if (objInput.NoEvent)
             {
                 keyboardScrolling = false;
-                if (current_keyboard_scroll_rate < objConfig.keyboard_scroll_rate)
+                if (current_keyboard_scroll_rate < objConfig.keyboard_scroll_rate - 5)
                     current_keyboard_scroll_rate += 5;
                 else
                     current_keyboard_scroll_rate = objConfig.keyboard_scroll_rate;
@@ -1820,7 +1830,7 @@ namespace feel
                     if (keyboardScrolling)
                     {
                         keyboardTickCount = TickCount + current_keyboard_scroll_rate;
-                        if (current_keyboard_scroll_rate > objConfig.keyboard_min_scroll_rate)
+                        if (current_keyboard_scroll_rate >= objConfig.keyboard_min_scroll_rate + 10)
                             current_keyboard_scroll_rate -= 10;
                         else
                             current_keyboard_scroll_rate = objConfig.keyboard_min_scroll_rate;  
@@ -2121,6 +2131,13 @@ namespace feel
                     if (menuKey == "show_search_key")
                     {
                         objConfig.SetParameter("show_search_key", !objConfig.show_search_key ? "1" : "0");
+                        SwitchMenu(null, "options", menuKey);
+                        sfxConfirm.Play();
+                        break;
+                    }
+                    if (menuKey == "restore_explorer_on_exit")
+                    {
+                        objConfig.SetParameter("restore_explorer_at_exit", !objConfig.restore_explorer_at_exit ? "1" : "0");
                         SwitchMenu(null, "options", menuKey);
                         sfxConfirm.Play();
                         break;
@@ -2964,6 +2981,7 @@ namespace feel
                             "show_search_key|Show search key hint [" + (objConfig.show_search_key ? "X" : "-") + "]",
                             //"show_extended_messages|Show extended messages [" + (objConfig.show_extended_messages ? "X" : "-") + "]",
                             "change_screensaver|Screensaver [" + screenSaverTypeItem + "]",
+                            "restore_explorer_on_exit|Restore Explorer on exit [" + (objConfig.restore_explorer_at_exit ? "X" : "-") + "]",
                             "update_beta|Beta version upgrades [" + (objConfig.update_beta ? "X" : "-") + "]",
                             "changelog|View changelog"
                         });
