@@ -37,6 +37,11 @@ namespace feel
         #region MachineState
         public class MachineState
         {
+            private string _toString = string.Empty;
+            private StateEnum _state = StateEnum.Normal;
+            private string _menu = string.Empty;
+            private string _menuKey = string.Empty;
+
             public enum StateEnum
             {
                 Normal,
@@ -48,10 +53,31 @@ namespace feel
                 BuildGameList,
                 StartEmulator
             }
-            public StateEnum State;
             public bool testMode;
             public int fps;
             public bool isRunning;
+            public StateEnum State { get { return _state; } set { _state = value; UpdateString(); } }
+            public string Menu { get { return _menu; } set { _menu = value != null ? value : string.Empty; UpdateString(); } }
+            public string MenuKey { get { return _menuKey; } set { _menuKey = value != null ? value : string.Empty; UpdateString(); } }
+
+            private void UpdateString()
+            {
+                var sb = new StringBuilder("State: ").Append(_state.ToString());
+                if (!string.IsNullOrEmpty(_menu))
+                {
+                    sb.Append("\nMenu: ").Append(_menu).Append("\nMenu key: ");
+                    if (!string.IsNullOrEmpty(_menuKey) && _menuKey != "menu_close")
+                        sb.Append(_menuKey);
+                    else
+                        sb.Append("-");
+                }
+                _toString = sb.ToString();
+            }
+
+            public override string ToString()
+            {
+                return _toString;
+            }
         }
         #endregion
 
@@ -1902,19 +1928,38 @@ namespace feel
                     // find game
                     if (menuKey.StartsWith("find_game_") && menuKey.Length == "find_game_".Length + 1)
                     {
-                        var index = romList.FindIndexByDescription(searchString + menuKey.Substring(10).Replace("_", " "), objConfig.fulltext_search);
-                        if (index > 0)
+                        if (objInput.KeyState(objConfig.action_key) == InputState.KeyPress)
                         {
-                            searchString += menuKey.Substring(10).Replace("_", " ");
-                            romList.FilterByDescription(searchString, objConfig.fulltext_search);
-                            currentRom = romList.SelectItem(1);
-                            romList.StartTransition(CDrawable.Transition.FadeIn);
-                            SwitchMenu(null, "find_game", menuKey);
-                            videoTickCount = TickCount + (objConfig.video_delay * 1000);
-                            sfxMenu.Play();
+                            var index = romList.FindIndexByDescription(searchString, !objConfig.fulltext_search);
+                            if (index > 0)
+                            {
+                                objConfig.SetParameter("fulltext_search", !objConfig.fulltext_search ? "1" : "0");
+                                romList.FilterByDescription(searchString, objConfig.fulltext_search);
+                                currentRom = romList.SelectItem(1);
+                                romList.StartTransition(CDrawable.Transition.FadeIn);
+                                SwitchMenu(null, "find_game", menuKey);
+                                videoTickCount = TickCount + (objConfig.video_delay * 1000);
+                                sfxMenu.Play();
+                            }
+                            else
+                                sfxCancel.Play();
                         }
                         else
-                            sfxCancel.Play();
+                        {
+                            var index = romList.FindIndexByDescription(searchString + menuKey.Substring(10).Replace("_", " "), objConfig.fulltext_search);
+                            if (index > 0)
+                            {
+                                searchString += menuKey.Substring(10).Replace("_", " ");
+                                romList.FilterByDescription(searchString, objConfig.fulltext_search);
+                                currentRom = romList.SelectItem(1);
+                                romList.StartTransition(CDrawable.Transition.FadeIn);
+                                SwitchMenu(null, "find_game", menuKey);
+                                videoTickCount = TickCount + (objConfig.video_delay * 1000);
+                                sfxMenu.Play();
+                            }
+                            else
+                                sfxCancel.Play();
+                        }
                         break;
                     }
                     // new gamelist
@@ -2633,6 +2678,7 @@ namespace feel
                 //    keyboardTickCount = TickCount + objConfig.keyboard_scroll_rate;
                 if (keyboardScrolling)
                 {
+                    _machineState.MenuKey = objMenu.MenuItemSelected.Key;
                     keyboardTickCount = TickCount + current_keyboard_scroll_rate;
                     if (current_keyboard_scroll_rate > objConfig.keyboard_min_scroll_rate)
                         current_keyboard_scroll_rate -= 10;
@@ -2695,7 +2741,7 @@ namespace feel
             if (string.IsNullOrEmpty(newMenu))
             {
                 objMenu.HideMenu(false);
-                currentMenu = null;
+                _machineState.Menu = _machineState.MenuKey = currentMenu = null;
                 
                 // reset focus on list
                 romList.SetFocus();
@@ -2741,7 +2787,8 @@ namespace feel
                     if (currentMenu != newMenu)
                         sfxMenu.Play();
 
-                    currentMenu = newMenu;
+                    _machineState.Menu = currentMenu = newMenu;
+                    _machineState.MenuKey = objMenu.MenuItemSelected.Key;
                 }
             }
         }
@@ -2863,7 +2910,7 @@ namespace feel
                     windowTitle = "Select FNET nickname";
                     additionalInfo = "Please choose your FNET nickname.";//\nBe careful: it can't be changed after!";
                     AddQwertyMenu("fnet_select_nickname_", menuCols);
-                    windowStatusbarText = "[ " + networkHelper.CurrentSession.nickname + " ] Action = set";
+                    windowStatusbarText = "[ " + networkHelper.CurrentSession.nickname + " ]   Action = set";
                     break;
                 }
                 if (newMenu == "select_platform")
@@ -3077,7 +3124,7 @@ namespace feel
                 {
                     windowTitle = "Find game";
                     AddQwertyMenu("find_game_", menuCols);
-                    windowStatusbarText = "[ " + (objConfig.fulltext_search ? "*" : "") + searchString + "* ]";
+                    windowStatusbarText = "[ " + (objConfig.fulltext_search ? "*" : "") + searchString + "* ]   Action = toggle fulltext";
                     break;
                 }
 
@@ -3100,7 +3147,7 @@ namespace feel
                 {
                     windowTitle = "New gamelist";
                     AddQwertyMenu("new_gamelist_", menuCols);
-                    windowStatusbarText = "[ " + newGamelistName + " ] Action = create";
+                    windowStatusbarText = "[ " + newGamelistName + " ]   Action = create";
                     break;
                 }
                 if (newMenu == "select_layout")

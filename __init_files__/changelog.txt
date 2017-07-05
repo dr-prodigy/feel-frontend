@@ -1,10 +1,12 @@
 --------------------------------------------------------
-Version 1.9.8 CE (R-T delta) -> 1.9.8.1b (03-08/06/2017)
+Version 1.9.8 CE (R-T delta) -> 1.9.8.1c (03-13/06/2017)
 --------------------------------------------------------
 NEW FEATURES
 - **** directory recursion on rom search: support for multi-directory emulators ****
 - rom extra-data management
 - "restore explorer on exit" menu item
+- richer test mode info (menu key names => menu icon names)
+- fulltext search toggle on find game menu
 
 BUGFIXES
 - keyboard repeat time not reset bug (re-issued.. now it should be busted!)

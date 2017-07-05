@@ -645,8 +645,9 @@ namespace feel
             if (machineState.testMode)
             {
                 // test mode written directly on SB!
-                spriteBatch.DrawString(testTextFont, "F.E.E.L. " + Application.ProductVersion + " (Test Mode) - FPS: " + machineState.fps,
-				                       testTextPosition, Color.AntiqueWhite);
+                spriteBatch.DrawString(
+                    testTextFont, "F.E.E.L. " + Application.ProductVersion + " (Test Mode) - FPS: " + machineState.fps + "\n" + machineState.ToString(),
+                                       new Vector2(testTextPosition.X, testTextPosition.Y), Color.GhostWhite);
             }
             spriteBatch.End();
 
