@@ -54,6 +54,18 @@ namespace feel
                     item.Key = romName;
                     item.Description = LabelCleanup(romName);
 
+                    var romRelativePath = fileList[iLoop].Substring(romPath.Length + 1); // skip initial backslash
+                    romRelativePath = romRelativePath.Substring(0,
+                        romRelativePath.Length - romName.Length - objConfig.rom_extension.Split(',')[0].Trim().Length - 1); // skip "."
+
+                    if (romRelativePath != string.Empty)
+                    {
+                        // remove trailing backslash
+                        if (romRelativePath.Substring(romRelativePath.Length - 1) == Path.DirectorySeparatorChar.ToString())
+                            romRelativePath = romRelativePath.Substring(0, romRelativePath.Length - 1);
+                        item.RomRelativePath = romRelativePath;
+                    }
+
                     dstList.Add(item);
                     if (iLoop % 100 == 0)
                         feel.ShowMessage("Adding available roms: " + iLoop + " of " + fileList.Length + "...", true);
