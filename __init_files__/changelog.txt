@@ -1,5 +1,5 @@
 -----------------------------------------------------------
-Version 1.9.8 CE (R-T delta) -> 1.9.8.1d (03/06-10/07/2017)
+Version 1.9.8 CE (R-T delta) -> 1.9.8.1e (03/06-26/07/2017)
 -----------------------------------------------------------
 NEW FEATURES
 - **** directory recursion on rom search: support for multi-directory emulators ****
@@ -10,6 +10,7 @@ NEW FEATURES
 
 BUGFIXES
 - keyboard repeat time not reset bug (re-issued.. now it should be busted!)
+- save config before emulator start (prevents losing config in case of a FEEL crash or kill)
 
 --------------------------------------------------
 Version 1.9.7 CE (charly) - (01/05/2017)

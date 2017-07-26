@@ -1321,6 +1321,9 @@ namespace feel
                 _runConfig = objConfig;
                 // update current game
                 objConfig.SetParameter("current_game", _currentRomName);
+                // save config immediately (preserve data in case of crash)
+                SaveConfig();
+                // backup config
                 objConfig.BackUpState();
 
                 if (_runConfig.list_type == ListType.rom_settings_ini_list)
@@ -1334,7 +1337,7 @@ namespace feel
                     else
                         _runConfig.LoadConfig(Levels.EMULATOR_INI, _runConfig.rom_path + Path.DirectorySeparatorChar + currentRom.Key + "." + _runConfig.rom_extension);
                 }
-                else// if (objConfig.list_type == ListType.rom_custom_settings)
+                else
                 {
                     // multi-emu start: load temp config
                     if (currentRom.FeelInfo.RunChain.IsSet)
