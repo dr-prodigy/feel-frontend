@@ -106,6 +106,7 @@ namespace feel
         private int screenSaverResume = 0;
         private int videoTickCount = 0;
         private int idleUpdateTickCount = 0;
+        private int focusTickCount = 0;
 
         // FNET
         private bool runFnet;
@@ -115,7 +116,6 @@ namespace feel
         private bool keyboardScrolling = false;
         private bool mouseScrolling = false;
         private bool _asyncTaskWait = false;
-        private bool isFocusGained;
         private bool isVersionCheckDone;
         private MachineState _machineState = new MachineState();
 
@@ -831,6 +831,13 @@ namespace feel
 
             objInput.UpdateKeyboard();
 
+            // if not in test mode, get focus every 2 secs (or after resume)
+            if (!objConfig.test_mode && focusTickCount < TickCount && feelForm != null)
+            {
+                feelForm.Activate();
+                focusTickCount = TickCount + 2000;
+            }
+
             if (objConfig.use_mouse != UseMouse.No)
                 objInput.UpdateMouse();
 
@@ -1124,22 +1131,16 @@ namespace feel
             // manage videosnap
             if (videoTickCount <= TickCount && (screenSaverResume <= TickCount || objConfig.screen_saver_enabled == ScreenSaverType.None))
             {
-                // gain focus on first videosnap timeout
-                if (!isFocusGained)
+                // check updates on first videosnap timeout
+                if (!isVersionCheckDone)
                 {
-                    feelForm.Activate();
-                    isFocusGained = true;
-
-                    if (!isVersionCheckDone)
-                    {
-                        // run FEEL update
-                        networkHelper.EnqueueTask(
-                            new NetworkTask(
-                                NetworkTask.TaskTypeEnum.FeelUpdate,
-                                new string[] { objConfig.feel_uuid, Application.ProductVersion, objConfig.update_beta ? "1" : "0" },
-                                true));
-                        isVersionCheckDone = true;
-                    }
+                    // run FEEL update
+                    networkHelper.EnqueueTask(
+                        new NetworkTask(
+                            NetworkTask.TaskTypeEnum.FeelUpdate,
+                            new string[] { objConfig.feel_uuid, Application.ProductVersion, objConfig.update_beta ? "1" : "0" },
+                            true));
+                    isVersionCheckDone = true;
                 }
 
                 if (currentRom != null)
@@ -1156,13 +1157,6 @@ namespace feel
                         if (objScene.videosnapVideo.PlayVideo(this, videoPath, parentVideoPath, objConfig.snapshot_width, objConfig.snapshot_height,
                             objConfig.snapshot_x_pos, objConfig.snapshot_y_pos, objConfig.video_volume, objConfig.video_speed, () =>
                         {
-                            // gain focus
-                            try
-                            {
-                                feelForm.Activate();
-                            }
-                            catch { }
-
                             // a new video started: fade in
                             objScene.snapshotImage.StartTransition(CDrawable.Transition.FadeIn);
                             objScene.snapshotImage.VideoSizeIsSet = false;
@@ -1445,9 +1439,6 @@ namespace feel
                     else
                         sfxCancel.Play();
                 }
-                
-                // regain focus
-                isFocusGained = false;
             }
 
             if (_machineState.State == MachineState.StateEnum.BuildGameList)
@@ -3095,9 +3086,9 @@ namespace feel
                     menuRows.Add("|special thanks to|");
                     menuRows.Add("menu_close|antogeno24 (initial concept)");
                     menuRows.Add("menu_close|adolfo69 (themes design)");
-                    menuRows.Add("menu_close|ArcadeItalia community ( http://www.arcadeitalia.net )");
-                    menuRows.Add("menu_close|picerno/SmartASD ( http://adb.arcadeitalia.net )");
-                    menuRows.Add("menu_close|motoschifo/ArcadeDB ( http://adb.arcadeitalia.net )");
+                    menuRows.Add("menu_close|ArcadeItalia community ( www.arcadeitalia.net )");
+                    menuRows.Add("menu_close|picerno/SmartASD ( www.arcadeitalia.net/jammasd.html )");
+                    menuRows.Add("menu_close|motoschifo/ArcadeDB ( adb.arcadeitalia.net )");
                     menuRows.Add("|");
                     menuRows.Add("|INFO|");
                     menuRows.Add("menu_close|v. " + Application.ProductVersion + "   (c) 2011-2017");
@@ -3239,36 +3230,39 @@ namespace feel
                 }
                 if (newMenu == "show_game_info")
                 {
-                    CLedManager.SetInputControlLeds(currentRom.InputControl);
-
-                    var history = result;
-                    var romName = objConfig.current_platform == "all_emu" ? currentRom.FeelInfo.RomName : currentRom.Key;
-                    additionalData = romName;
-                    windowTitle = (runFnet ? "F.NET stats - " : "Stats - ") + (currentRom.Description != string.Empty ? currentRom.Description + " - " : "") + "[" + Utils.ShortenString(romName, 20) + "]";
-                    isTextReader = true;
-
-                    var hiscore = string.Empty;
-                    if (!runFnet) hiscore = CRomManager.GetGameHiscore(objConfig, currentRom);
-                    if (!string.IsNullOrEmpty(hiscore))
+                    if (currentRom != null)
                     {
-                        menuRows.Add("menu_close|");
-                        foreach (var line in hiscore.Split('\n'))
+                        CLedManager.SetInputControlLeds(currentRom.InputControl);
+
+                        var history = result;
+                        var romName = objConfig.current_platform == "all_emu" ? currentRom.FeelInfo.RomName : currentRom.Key;
+                        additionalData = romName;
+                        windowTitle = (runFnet ? "F.NET stats - " : "Stats - ") + (currentRom.Description != string.Empty ? currentRom.Description + " - " : "") + "[" + Utils.ShortenString(romName, 20) + "]";
+                        isTextReader = true;
+
+                        var hiscore = string.Empty;
+                        if (!runFnet) hiscore = CRomManager.GetGameHiscore(objConfig, currentRom);
+                        if (!string.IsNullOrEmpty(hiscore))
+                        {
+                            menuRows.Add("menu_close|");
+                            foreach (var line in hiscore.Split('\n'))
+                            {
+                                menuRows.Add("menu_close|" + line);
+                            }
+                        }
+
+                        var sf = Utils.LoadSpriteFont(this, objConfig.menu_font_name, objConfig.menu_font_size, objConfig.menu_font_style);
+                        if (history != null)
+                            menuRows.Add("menu_close|");
+                        foreach (var line in CFileManager.Justify(history,
+                            (int)(objConfig.screen_res_x * .8),
+                            sf).Split('\n'))
                         {
                             menuRows.Add("menu_close|" + line);
                         }
-                    }
 
-                    var sf = Utils.LoadSpriteFont(this, objConfig.menu_font_name, objConfig.menu_font_size, objConfig.menu_font_style);
-                    if (history != null)
-                        menuRows.Add("menu_close|");
-                    foreach (var line in CFileManager.Justify(history,
-                        (int)(objConfig.screen_res_x * .8),
-                        sf).Split('\n'))
-                    {
-                        menuRows.Add("menu_close|" + line);
+                        additionalInfo = CRomManager.GetGameInfo(objConfig, currentRom, romList);
                     }
-
-                    additionalInfo = CRomManager.GetGameInfo(objConfig, currentRom, romList);
                     
                     break;
                 }
