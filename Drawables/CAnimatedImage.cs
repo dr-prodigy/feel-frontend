@@ -28,7 +28,7 @@ namespace feel
 {
     class CAnimatedImage: CImage
     {
-        private Texture2D[] frames = new Texture2D[12];
+        private Texture2D[] frames = new Texture2D[30];
         private int _currentFrame;
         private int _frameCount;
         private double _frameDuration;
@@ -57,18 +57,24 @@ namespace feel
             var fileBasename = Utils.GetFilenameBase(fileName);
             var fileExt = Utils.GetFilenameExt(fileName);
 
-            // loop filename.png, filename1.png, filename2.png, filename3.png...
-            for (var iLoop = 0; iLoop < 10; iLoop++)
+            // loop files
+            for (var iLoop = 0; iLoop < 30; iLoop++)
             {
                 if (iLoop == 0)
                     frames[iLoop] = _texture;
                 else
                 {
-                    var tmpFilename = iLoop == 0 ? fileName : (fileBasename + iLoop.ToString() + fileExt);
+                    var tmpFilename = iLoop == 0 ? fileName : (fileBasename + iLoop.ToString("0#") + fileExt); // filename01.png, filename02.png, filename03.png...
+                    var tmpFilename2 = iLoop == 0 ? fileName : (fileBasename + iLoop + fileExt); // filename1.png, filename2.png, filename3.png...
                     if (File.Exists(tmpFilename))
                     {
                         _frameCount = iLoop + 1;
                         frames[iLoop] = CreateTexture(tmpFilename);
+                    }
+                    else if (File.Exists(tmpFilename2))
+                    {
+                        _frameCount = iLoop + 1;
+                        frames[iLoop] = CreateTexture(tmpFilename2);
                     }
                     else
                     {
