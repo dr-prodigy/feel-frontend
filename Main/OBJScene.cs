@@ -1,5 +1,5 @@
 ﻿/* 
- * Copyright (c) 2011-2017 FEELTeam - Maurizio Montel.
+ * Copyright (c) 2011-2018 FEELTeam - Maurizio Montel.
  * 
  * This file is part of the FEEL (FrontEnd - Emulator Launcher) distribution.
  *   (https://github.com/dr-prodigy/feel-frontend)
@@ -345,7 +345,8 @@ namespace feel
 
         private bool _multipleFilesMusic = false;
         public bool MultipleFilesMusic { get { return _multipleFilesMusic; } }
-        public void SetBackgroundMusic(string musicPath, int volume)
+        private double _changeTrackDelay = 0d;
+        public void SetBackgroundMusic(string musicPath, int volume, double changeTrackDelay)
         {
             if (backgroundMusicPath == musicPath)
             {
@@ -376,6 +377,7 @@ namespace feel
             currentBackgroundMusic = -1;
             backgroundMusicVolume = volume;
             backgroundMusicPath = musicPath;
+            _changeTrackDelay = changeTrackDelay;
 
             // it's a directory..
             if (Directory.Exists(backgroundMusicPath))
@@ -421,24 +423,33 @@ namespace feel
             }
         }
 
-        public void PlayBackgroundMusic()
+        private double _changeTrackDelayCounter = 0;
+        public void PlayBackgroundMusic(GameTime gameTime)
         {
-            // PlayList
-            if (topmostForm.IsPlayEnded && backgroundMusic != null && backgroundMusicPlayList.Count > 0)
+            if (topmostForm.IsPlayEnded)
             {
-                currentBackgroundMusic++;
-                if (currentBackgroundMusic >= backgroundMusicPlayList.Count)
-                    currentBackgroundMusic = 0;
-                backgroundMusic.SetMusic(backgroundMusicPlayList[currentBackgroundMusic], backgroundMusicVolume);
-                backgroundMusic.Play(topmostForm.Handle);
-                topmostForm.IsPlayEnded = false;
+                _changeTrackDelayCounter -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_changeTrackDelayCounter <= 0)
+                {
+                    // PlayList
+                    if (backgroundMusic != null && backgroundMusicPlayList.Count > 0)
+                    {
+                        currentBackgroundMusic++;
+                        if (currentBackgroundMusic >= backgroundMusicPlayList.Count)
+                            currentBackgroundMusic = 0;
+                        backgroundMusic.SetMusic(backgroundMusicPlayList[currentBackgroundMusic], backgroundMusicVolume);
+                        backgroundMusic.Play(topmostForm.Handle);
+                    }
+                    else if (backgroundSound != null)
+                    {
+                        // Single File
+                        backgroundSound.PlayLooping();
+                    }
+                    topmostForm.IsPlayEnded = false;
+                }
             }
-            else if (topmostForm.IsPlayEnded && backgroundSound != null)
-            {
-                // Single File
-                backgroundSound.PlayLooping();
-                topmostForm.IsPlayEnded = false;
-            }
+            else
+                _changeTrackDelayCounter = _changeTrackDelay * 1000d;
         }
 
         public void NextTrackBackgroundMusic()
@@ -639,7 +650,7 @@ namespace feel
                 // Toast
                 messageToast.Draw(gameTime, spriteBatch, _pendingTransition);
 
-				PlayBackgroundMusic();
+				PlayBackgroundMusic(gameTime);
             }
 
             if (machineState.testMode)

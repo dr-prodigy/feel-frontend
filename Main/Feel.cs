@@ -1,5 +1,5 @@
 ﻿/* 
- * Copyright (c) 2011-2017 FEELTeam - Maurizio Montel.
+ * Copyright (c) 2011-2018 FEELTeam - Maurizio Montel.
  * 
  * This file is part of the FEEL (FrontEnd - Emulator Launcher) distribution.
  *   (https://github.com/dr-prodigy/feel-frontend)
@@ -533,7 +533,7 @@ namespace feel
             sfxStartEmu = objScene.CreateSound("sfxStartEmu", objConfig.sound_fx_startemu, objConfig.sound_fx_volume);
 
             // Background Music
-            objScene.SetBackgroundMusic(objConfig.music_path, objConfig.music_volume);
+            objScene.SetBackgroundMusic(objConfig.music_path, objConfig.music_volume, objConfig.music_change_delay);
 
             currentRom = null;
             romList = new CListBox(objScene, this, objConfig.romlist_width, objConfig.romlist_height, objConfig.romlist_item_height, objConfig.romlist_x_pos, objConfig.romlist_y_pos,
@@ -591,7 +591,7 @@ namespace feel
             sfxStartEmu.SetSound(new StringBuilder(Application.StartupPath).Append(Path.DirectorySeparatorChar).Append("media").Append(Path.DirectorySeparatorChar).Append(objConfig.sound_fx_startemu).ToString(), objConfig.sound_fx_volume);
 
             // Background Music
-            objScene.SetBackgroundMusic(objConfig.music_path, objConfig.music_volume);
+            objScene.SetBackgroundMusic(objConfig.music_path, objConfig.music_volume, objConfig.music_change_delay);
             _marqueeImage.Visible = objConfig.marquee_visible;
             _cabinetImage.Visible = objConfig.cabinet_visible;
         }
@@ -3091,7 +3091,7 @@ namespace feel
                     menuRows.Add("menu_close|motoschifo/ArcadeDB ( adb.arcadeitalia.net )");
                     menuRows.Add("|");
                     menuRows.Add("|INFO|");
-                    menuRows.Add("menu_close|v. " + Application.ProductVersion + "   (c) 2011-2017");
+                    menuRows.Add("menu_close|v. " + Application.ProductVersion + "   (c) 2011-2018");
                     menuRows.Add("menu_close|FEEL is free software: refer to doc for info.");
                     isTextReader = true;
                     CLedManager.StartAboutBoxProgram();

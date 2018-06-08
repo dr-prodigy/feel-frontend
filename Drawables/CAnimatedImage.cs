@@ -1,5 +1,5 @@
 ﻿/* 
- * Copyright (c) 2011-2017 FEELTeam - Maurizio Montel.
+ * Copyright (c) 2011-2018 FEELTeam - Maurizio Montel.
  * 
  * This file is part of the FEEL (FrontEnd - Emulator Launcher) distribution.
  *   (https://github.com/dr-prodigy/feel-frontend)
@@ -28,7 +28,7 @@ namespace feel
 {
     class CAnimatedImage: CImage
     {
-        private Texture2D[] frames = new Texture2D[30];
+        private Texture2D[] frames = new Texture2D[50];
         private int _currentFrame;
         private int _frameCount;
         private double _frameDuration;
@@ -58,7 +58,7 @@ namespace feel
             var fileExt = Utils.GetFilenameExt(fileName);
 
             // loop files
-            for (var iLoop = 0; iLoop < 30; iLoop++)
+            for (var iLoop = 0; iLoop < 50; iLoop++)
             {
                 if (iLoop == 0)
                     frames[iLoop] = _texture;

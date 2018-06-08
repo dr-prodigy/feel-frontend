@@ -1,19 +1,22 @@
 -----------------------------------------------------------
-Version 1.9.8 CE (R-T delta) -> 1.9.8.3 (03/06-08/10/2017)
+Version 1.9.8 CE (R-T delta) -> 1.9.8.5 (03/06-08/06/2018)
 -----------------------------------------------------------
 NEW FEATURES
-- up to 30 frames on all animated images
+- up to 50 frames on all animated images
 - **** directory recursion on rom search: support for multi-directory emulators ****
 - rom extra-data management
 - "restore explorer on exit" menu item
 - richer test mode info (menu key names => menu icon names)
 - fulltext search toggle on find game menu
 - stronger focus retainment (now only in normal mode)
+- change music track delay
 
-BUGFIXES
+BUGFIXES/CHANGES
+- history webservices moved to adb.arcadeitalia.net
 - keyboard repeat time not reset bug (re-issued.. now it should be busted!)
 - save config before emulator start (prevents losing config in case of a FEEL crash or kill)
 - Change emu + Show Info (ctrl+shift) shortcut bug
+- copyright 2018
 
 --------------------------------------------------
 Version 1.9.7 CE (charly) - (01/05/2017)

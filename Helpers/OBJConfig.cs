@@ -1,5 +1,5 @@
 ﻿/* 
- * Copyright (c) 2011-2017 FEELTeam - Maurizio Montel.
+ * Copyright (c) 2011-2018 FEELTeam - Maurizio Montel.
  * 
  * This file is part of the FEEL (FrontEnd - Emulator Launcher) distribution.
  *   (https://github.com/dr-prodigy/feel-frontend)
@@ -274,6 +274,7 @@ namespace feel
         public int sound_fx_volume { get; private set; }
         public int music_volume { get; private set; }
         public int video_volume { get; private set; }
+        public int music_change_delay { get; private set; }
         public float video_speed { get; private set; }
         public int joypad_dead_zone { get; private set; }
         public int video_delay { get; private set; }
@@ -419,6 +420,7 @@ namespace feel
                 { "sound_fx_volume", new Parameter("sound_fx_volume", Levels.FEEL_INI, "80", true) },
                 { "music_path", new Parameter("music_path", Levels.FEEL_INI, "", true) },
                 { "music_volume", new Parameter("music_volume", Levels.FEEL_INI, "60", true) },
+                { "music_change_delay", new Parameter("music_change_delay", Levels.FEEL_INI, "0", true) },
                 { "video_delay", new Parameter("video_delay", Levels.FEEL_INI, "2", true) },
                 { "video_volume", new Parameter("video_volume", Levels.FEEL_INI, "30", true) },
                 { "video_speed", new Parameter("video_speed", Levels.FEEL_INI, "1.0", true) },

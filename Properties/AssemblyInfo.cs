@@ -1,5 +1,5 @@
 ﻿/* 
- * Copyright (c) 2011-2017 FEELTeam - Maurizio Montel.
+ * Copyright (c) 2011-2018 FEELTeam - Maurizio Montel.
  * 
  * This file is part of the FEEL (FrontEnd - Emulator Launcher) distribution.
  *   (https://github.com/dr-prodigy/feel-frontend)
@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("Feel")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyCompany("FEELTeam")]
-[assembly: AssemblyCopyright("Copyright © M.Montel 2011-2017")]
+[assembly: AssemblyCopyright("Copyright © M.Montel 2011-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -36,5 +36,5 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("91224c73-b6dc-4340-8664-9b358954fed8")]
 
-[assembly: AssemblyVersion("41")]
-[assembly: AssemblyFileVersion("1.9.8.3")]
+[assembly: AssemblyVersion("43")]
+[assembly: AssemblyFileVersion("1.9.8.5")]
