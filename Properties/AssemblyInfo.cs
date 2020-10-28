@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("Feel")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyCompany("FEELTeam")]
-[assembly: AssemblyCopyright("Copyright © M.Montel 2011-2018")]
+[assembly: AssemblyCopyright("Copyright © M.Montel 2011-2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -36,5 +36,5 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("91224c73-b6dc-4340-8664-9b358954fed8")]
 
-[assembly: AssemblyVersion("43")]
-[assembly: AssemblyFileVersion("1.9.8.5")]
+[assembly: AssemblyVersion("44")]
+[assembly: AssemblyFileVersion("1.9.8.6")]

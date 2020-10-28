@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2011-2018 FEELTeam - Maurizio Montel.
+ * Copyright (c) 2011-2020 FEELTeam - Maurizio Montel.
  * 
  * This file is part of the FEEL (FrontEnd - Emulator Launcher) distribution.
  *   (https://github.com/dr-prodigy/feel-frontend)

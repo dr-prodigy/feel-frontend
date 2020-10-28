@@ -1,5 +1,5 @@
 ﻿/* 
- * Copyright (c) 2011-2018 FEELTeam - Maurizio Montel.
+ * Copyright (c) 2011-2020 FEELTeam - Maurizio Montel.
  * 
  * This file is part of the FEEL (FrontEnd - Emulator Launcher) distribution.
  *   (https://github.com/dr-prodigy/feel-frontend)
@@ -156,6 +156,7 @@ namespace feel
         private CSound sfxCancel;
         private CSound sfxConfirm;
         private CSound sfxStartEmu;
+        private CSound sfxChangeEmu;
 
         private int current_keyboard_scroll_rate;
 
@@ -193,6 +194,7 @@ namespace feel
         	if (sfxCancel != null) sfxCancel.Dispose();
         	if (sfxConfirm != null) sfxConfirm.Dispose();
             if (sfxStartEmu != null) sfxStartEmu.Dispose();
+            if (sfxChangeEmu != null) sfxChangeEmu.Dispose();
             if (objScene != null) objScene.Dispose();
             if (objInput != null) objInput.Dispose();
 
@@ -205,7 +207,7 @@ namespace feel
             if (networkHelper != null) networkHelper.Dispose();
             if (actionQueue != null) actionQueue.Dispose();
 
-            sfxList = sfxMenu = sfxCancel = sfxConfirm = sfxStartEmu = null;
+            sfxList = sfxMenu = sfxCancel = sfxConfirm = sfxStartEmu = sfxChangeEmu = null;
             objScene = null;
             objInput = null;
             networkHelper = null;
@@ -531,6 +533,7 @@ namespace feel
             sfxCancel = objScene.CreateSound("sfxCancel", objConfig.sound_fx_cancel, objConfig.sound_fx_volume);
             sfxConfirm = objScene.CreateSound("sfxConfirm", objConfig.sound_fx_confirm, objConfig.sound_fx_volume);
             sfxStartEmu = objScene.CreateSound("sfxStartEmu", objConfig.sound_fx_startemu, objConfig.sound_fx_volume);
+            sfxChangeEmu = objScene.CreateSound("sfxChangeEmu", objConfig.sound_fx_changeemu, objConfig.sound_fx_volume);
 
             // Background Music
             objScene.SetBackgroundMusic(objConfig.music_path, objConfig.music_volume, objConfig.music_change_delay);
@@ -589,6 +592,7 @@ namespace feel
             sfxCancel.SetSound(new StringBuilder(Application.StartupPath).Append(Path.DirectorySeparatorChar).Append("media").Append(Path.DirectorySeparatorChar).Append(objConfig.sound_fx_cancel).ToString(), objConfig.sound_fx_volume);
             sfxConfirm.SetSound(new StringBuilder(Application.StartupPath).Append(Path.DirectorySeparatorChar).Append("media").Append(Path.DirectorySeparatorChar).Append(objConfig.sound_fx_confirm).ToString(), objConfig.sound_fx_volume);
             sfxStartEmu.SetSound(new StringBuilder(Application.StartupPath).Append(Path.DirectorySeparatorChar).Append("media").Append(Path.DirectorySeparatorChar).Append(objConfig.sound_fx_startemu).ToString(), objConfig.sound_fx_volume);
+            sfxChangeEmu.SetSound(new StringBuilder(Application.StartupPath).Append(Path.DirectorySeparatorChar).Append("media").Append(Path.DirectorySeparatorChar).Append(objConfig.sound_fx_changeemu).ToString(), objConfig.sound_fx_volume);
 
             // Background Music
             objScene.SetBackgroundMusic(objConfig.music_path, objConfig.music_volume, objConfig.music_change_delay);
@@ -610,6 +614,7 @@ namespace feel
 
             // Reset Scene Images
             objScene.ResetImages();
+            _backgroundImage = _bezelImage = _actorsImage = null;
 
             // Main Image
             var filename = Application.StartupPath + Path.DirectorySeparatorChar + "layouts" + Path.DirectorySeparatorChar + objConfig.current_layout + Path.DirectorySeparatorChar + "main.png";
@@ -1343,13 +1348,19 @@ namespace feel
                     _runConfig.LoadConfig(Levels.ROM_INI, string.Empty);
                 }
 
+                string romKey = currentRom.Key;
+                if (romKey.Contains("§"))
+                    romKey = romKey.Split('§')[0];
+
                 // set hidden cursor
                 //CCursorManager.SetFeelSystemCursor();
 
                 if (_runConfig.list_type == ListType.mame_listinfo || _runConfig.list_type == ListType.mame_xml_list)
+                {
                     networkHelper.EnqueueTask(new NetworkTask(
                         NetworkTask.TaskTypeEnum.GameStart,
-                        new string[] { currentRom.Key, currentRom.Description }, true));
+                        new string[] { romKey, currentRom.Description }, true));
+                }
 
                 // PRE EMULATOR APP
                 if (!string.IsNullOrEmpty(_runConfig.pre_emulator_app_commandline))
@@ -1407,7 +1418,7 @@ namespace feel
                 if (_runConfig.list_type == ListType.mame_listinfo || _runConfig.list_type == ListType.mame_xml_list)
                     networkHelper.EnqueueTask(new NetworkTask(
                         NetworkTask.TaskTypeEnum.GameStop,
-                        new string[] { currentRom.Key }, true));
+                        new string[] { romKey }, true));
 
                 Utils.PrintLog("-----------------------");
 
@@ -1471,9 +1482,7 @@ namespace feel
             startInfo.FileName = command;
             startInfo.WindowStyle = ProcessWindowStyle.Normal;
             startInfo.Arguments = arguments;
-            Utils.PrintLog("Current phase: " + currentPhase);
-            Utils.PrintLog("Command run: " + command + " " + arguments);
-            Utils.PrintLog("Working dir: " + startInfo.WorkingDirectory);
+            Utils.PrintLog("Phase: " + currentPhase + ", command: " + command + " " + arguments + ", workdir: " + startInfo.WorkingDirectory);
 
             if (waitForExit)
             {
@@ -1704,7 +1713,8 @@ namespace feel
                                     ShowToast("Platform: " + arr[1]);
                                 else if (objConfig.show_extended_messages)
                                     ShowToast("\"TOP\" gamelist");
-                                sfxConfirm.Play();
+                                if (!sfxChangeEmu.Play())
+                                    sfxConfirm.Play();
                                 break;
                             }
                         }
@@ -1732,7 +1742,8 @@ namespace feel
                                 arr = emulatorList[newId].Split('|');
                                 SelectEmulator(arr[0]);
                                 if (objConfig.show_extended_messages) ShowToast("Emulator: " + arr[1]);
-                                sfxConfirm.Play();
+                                if (!sfxChangeEmu.Play())
+                                    sfxConfirm.Play();
                                 break;
                             }
                         }
@@ -1760,7 +1771,8 @@ namespace feel
                                 arr = gameListList[newId].Split('|');
                                 SelectGameList(arr[0]);
                                 if (objConfig.show_extended_messages) ShowToast("Gamelist: " + arr[1]);
-                                sfxConfirm.Play();
+                                if (!sfxChangeEmu.Play())
+                                    sfxConfirm.Play();
                                 break;
                             }
                         }
@@ -2032,7 +2044,8 @@ namespace feel
                                 else if (objConfig.show_extended_messages)
                                     ShowToast("\"TOP\" gamelist");
                                 SwitchMenu(null);
-                                sfxConfirm.Play();
+                                if (!sfxChangeEmu.Play())
+                                    sfxConfirm.Play();
                             }
                             else
                             {
@@ -2041,7 +2054,8 @@ namespace feel
                                 else
                                 {
                                     SwitchMenu(null);
-                                    sfxConfirm.Play();
+                                    if (!sfxChangeEmu.Play())
+                                        sfxConfirm.Play();
                                 }
                             }
                         }
@@ -2059,7 +2073,8 @@ namespace feel
                             SelectEmulator(arr[0]);
                             ShowToast("Emulator: " + menuValue);
                             SwitchMenu(null);
-                            sfxConfirm.Play();
+                            if (!sfxChangeEmu.Play())
+                                sfxConfirm.Play();
                             break;
                         }
                         else
@@ -3079,7 +3094,7 @@ namespace feel
                 {
                     windowTitle = "F.E.(E.L.) - FrontEnd (Emulator Launcher)";
                     menuRows.Add("|CONCEPT & DEVELOPMENT|");
-                    menuRows.Add("menu_close|FEELTeam / dr.prodigy");
+                    menuRows.Add("menu_close|M.Montel (dr.prodigy)");
                     menuRows.Add("|WEBSITE                            |");
                     menuRows.Add("menu_close|http://feelfrontend.altervista.net");
                     menuRows.Add("menu_close|https://github.com/dr-prodigy/feel-frontend-ce");
@@ -3091,7 +3106,7 @@ namespace feel
                     menuRows.Add("menu_close|motoschifo/ArcadeDB ( adb.arcadeitalia.net )");
                     menuRows.Add("|");
                     menuRows.Add("|INFO|");
-                    menuRows.Add("menu_close|v. " + Application.ProductVersion + "   (c) 2011-2018");
+                    menuRows.Add("menu_close|v. " + Application.ProductVersion + "   (c) 2011-2020");
                     menuRows.Add("menu_close|FEEL is free software: refer to doc for info.");
                     isTextReader = true;
                     CLedManager.StartAboutBoxProgram();
