@@ -1,7 +1,7 @@
 # F.E.E.L. (FrontEnd - Emulator Launcher)
 
 ---------------------------------------------------------------------------------------
-Official web site: http://feelfrontend.altervista.org
+Official web site: https://feelfrontend.altervista.org (discontinued)
 
 Graphic frontend for retrogaming PCs (mame-cabinets, bartop, etc.) with animations, snap/videosnap management, customizable skins and configurable for infinite emulators and game lists and statistics controlled by arcade sticks, spinner, trackball, etc.
 
@@ -23,7 +23,7 @@ HW requirements are minimal (Intel P4 or similar, with even very old video cards
 Steps for building:
 
 - install Microsoft .NET Framework 3.5 (it's usually on board on all recent Win OSes: please refer to specific doc)
-- install Microsoft Visual C# Express 2008 (http://go.microsoft.com/?linkid=7729278) or greater
+- install Microsoft Visual C# Express 2008 (https://archive.org/details/vs-2008-express-w-sp-1) or greater
 - install Microsoft XNA Game Studio 3.1 (https://www.microsoft.com/en-us/download/details.aspx?id=39)
 - start VC2008 and create a new empty project
 - clone FEEL repository inside project's root directory
